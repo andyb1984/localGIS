@@ -1,16 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Preview</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <style type="text/css">
+        body { margin: 0; padding: 0; }
+        html, body, #map { width: 100%; height: 100%; }
+        
+        /* Custom Locate Me Button */
+        .leaflet-control-locate {
+            background-color: #ffffff;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 4px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        }
+        .leaflet-control-locate:hover {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map', {attributionControl: false}).setView([51.1529, -0.665908], 15);
+    
+    L.control.attribution({prefix: false}).addTo(map);
+
+    // Relative path pointing directly to 12/, 13/, 14/ zoom folders in root
+    var tilesource_layer = L.tileLayer('./{z}/{x}/{y}.png', {
+        minZoom: 12, 
+        maxZoom: 18, 
+        tms: false, 
+        attribution: 'Created by QGIS'
+    }).addTo(map);
+
     // --- GPS Location Functionality ---
     var userMarker, userCircle;
 
     function onLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        // Remove previous marker/circle if position updates
         if (userMarker) {
             map.removeLayer(userMarker);
             map.removeLayer(userCircle);
         }
 
-        // Draw accuracy circle
         userCircle = L.circle(e.latlng, radius, {
             color: '#136AEC',
             fillColor: '#136AEC',
@@ -18,7 +62,6 @@
             weight: 1
         }).addTo(map);
 
-        // Draw blue location dot
         userMarker = L.circleMarker(e.latlng, {
             radius: 8,
             color: '#ffffff',
@@ -45,7 +88,7 @@
             
             container.onclick = function(e) {
                 e.stopPropagation();
-                // ONLY pan/zoom when the user explicitly clicks this button
+                // ONLY pan/zoom when explicitly tapping button
                 map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
             };
             return container;
@@ -54,5 +97,8 @@
 
     map.addControl(new locateControl());
 
-    // Silently plot location in background ONCE on load WITHOUT snapping/moving the map view
+    // Silently plot location dot in background ONCE without changing view
     map.locate({ setView: false, enableHighAccuracy: true });
+</script>
+</body>
+</html>
