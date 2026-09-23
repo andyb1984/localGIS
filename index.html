@@ -37,7 +37,7 @@
     L.control.attribution({prefix: false}).addTo(map);
 
     // Updated relative path for GitHub Pages deployment
-    var tilesource_layer = L.tileLayer('./XYZs/{z}/{x}/{y}.png', {
+    var tilesource_layer = L.tileLayer('./{z}/{x}/{y}.png', {
         minZoom: 12, 
         maxZoom: 18, 
         tms: false, 
