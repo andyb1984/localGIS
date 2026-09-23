@@ -1,49 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Leaflet preview</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin=""></script>
-    <style type="text/css">
-        body { margin: 0; padding: 0; }
-        html, body, #map { width: 100%; height: 100%; }
-        
-        /* Custom Locate Me Button */
-        .leaflet-control-locate {
-            background-color: #ffffff;
-            border: 2px solid rgba(0,0,0,0.2);
-            border-radius: 4px;
-            width: 34px;
-            height: 34px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-        }
-        .leaflet-control-locate:hover {
-            background-color: #f4f4f4;
-        }
-    </style>
-</head>
-<body>
-<div id="map"></div>
-<script>
-    var map = L.map('map', {attributionControl: false}).setView([51.1529, -0.665908], 15);
-    
-    L.control.attribution({prefix: false}).addTo(map);
-
-    // Updated relative path for GitHub Pages deployment
-    var tilesource_layer = L.tileLayer('./{z}/{x}/{y}.png', {
-        minZoom: 12, 
-        maxZoom: 18, 
-        tms: false, 
-        attribution: 'Created by QGIS'
-    }).addTo(map);
-
     // --- GPS Location Functionality ---
     var userMarker, userCircle;
 
@@ -75,7 +29,7 @@
     }
 
     function onLocationError(e) {
-        alert("Unable to access GPS location: " + e.message);
+        console.log("GPS Location Access: " + e.message);
     }
 
     map.on('locationfound', onLocationFound);
@@ -91,7 +45,8 @@
             
             container.onclick = function(e) {
                 e.stopPropagation();
-                map.locate({ setView: true, maxZoom: 17, enableHighAccuracy: true });
+                // Clicking the target button explicitly re-centers on user location
+                map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
             };
             return container;
         }
@@ -99,8 +54,5 @@
 
     map.addControl(new locateControl());
 
-    // Auto-trigger location search on load
-    map.locate({ setView: true, maxZoom: 16, watch: true, enableHighAccuracy: true });
-</script>
-</body>
-</html>
+    // Locate once on startup to center, then allow free panning
+    map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
