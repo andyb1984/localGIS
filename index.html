@@ -4,13 +4,13 @@
     function onLocationFound(e) {
         var radius = e.accuracy / 2;
 
-        // Remove previous marker/accuracy circle if position updates
+        // Remove previous marker/circle if position updates
         if (userMarker) {
             map.removeLayer(userMarker);
             map.removeLayer(userCircle);
         }
 
-        // Add accuracy circle around blue dot
+        // Draw accuracy circle
         userCircle = L.circle(e.latlng, radius, {
             color: '#136AEC',
             fillColor: '#136AEC',
@@ -18,7 +18,7 @@
             weight: 1
         }).addTo(map);
 
-        // Add pulsing blue dot for mobile position
+        // Draw blue location dot
         userMarker = L.circleMarker(e.latlng, {
             radius: 8,
             color: '#ffffff',
@@ -45,7 +45,7 @@
             
             container.onclick = function(e) {
                 e.stopPropagation();
-                // Clicking the target button explicitly re-centers on user location
+                // ONLY pan/zoom when the user explicitly clicks this button
                 map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
             };
             return container;
@@ -54,5 +54,5 @@
 
     map.addControl(new locateControl());
 
-    // Locate once on startup to center, then allow free panning
-    map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true });
+    // Silently plot location in background ONCE on load WITHOUT snapping/moving the map view
+    map.locate({ setView: false, enableHighAccuracy: true });
